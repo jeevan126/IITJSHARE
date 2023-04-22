@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Django default" uuid="75edf096-9f11-4bd8-8b96-a4c7d8136243">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" exact-version="0" />
+      <user-name>postgres</user-name>
+    </data-source>
+    <data-source name="arcxival@localhost" uuid="16815812-4d05-4f41-8b59-9f3d5ea52018">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MARIADB" exact-version="0" />
+      <introspection-schemas>*:@</introspection-schemas>
+    </data-source>
+    <data-source name="Django default2" uuid="55bdfe2c-05b3-4be7-b23e-1fd82998b143">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" exact-version="0" />
+    </data-source>
+  </component>
+</project>
