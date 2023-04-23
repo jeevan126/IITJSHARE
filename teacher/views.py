@@ -6,6 +6,8 @@ from django.core import serializers
 from customuser.models import user_type
 from django.conf import settings
 import os
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -87,25 +89,32 @@ def batchinfo(request, session_id):
 
 def projectdetails(request, session_id, project_id):
     # print(project_title, session)
-    if request.user.is_authenticated:
+    if request.user.is_authenticated :
         if request.method == 'POST':
+            print("this is  request")
+
             if request.POST.get('delete') is not None:
+                print("this is delete request")
                 path = request.POST.get('delete')
+                print("1:")
                 print(path)
                 full_path = os.path.join(settings.MEDIA_ROOT, path)
                 full_path = full_path.replace("/", "\\")
                 print(full_path)
                 try:
+                    print("2:")
                     os.remove(full_path)
                 except FileNotFoundError:
+                    print("3:")
                     return redirect(request.path_info)
 
                 fileob = file.objects.get(file_content=request.POST.get('delete'))
-
+                print("4:")
                 fileob.delete()
 
 
             else:
+                print("this is okay0")
                 for uploaded_file in request.FILES.getlist('file'):
                     # uploaded_file = request.FILES['file']
                     # fs = FileSystemStorage()
@@ -129,18 +138,44 @@ def projectdetails(request, session_id, project_id):
                     file_obj = file(file_name=uploaded_file.name, project_id=project_ob, file_content=uploaded_file,
                                     file_size=value)
                     file_obj.save()
+                    project_obj = get_object_or_404(project, pk=project_id)
+                    s1 = project_obj.member1_reg  
+                    s2 = project_obj.member2_reg  
+                    s3 = project_obj.member3_reg 
+                    lst = [s1.email, s2.email, s3.email] 
+                    teacher_obj = teacher.objects.get(email=request.user)
+                    email = EmailMessage(
+                                    'New file shared with you',
+                                    f"{teacher_obj.name}({teacher_obj.email}) send you a file in {project_ob.project_title} project ",
+                                    'jschouhan2325@gmail.com',
+                                    to = lst,
+                                    )
+                    email.send()
+                    print("this is okay")
         project_obj = get_object_or_404(project, pk=project_id)
+        session_obj = get_object_or_404(session, pk=session_id)
         project_messages = project_obj.message_set.all().order_by('-created')
         Project = project.objects.get(pk=project_id)
-        student_obj = teacher.objects.get(email=request.user)
+        teacher_obj = teacher.objects.get(email=request.user)
         if request.method == 'POST' and request.POST.get('body') is not None:
             print("jii")
-            print("The name of the user is this:", student_obj.name)
+            print("The name of the user is this:::", teacher_obj.name)
+            s1 = project_obj.member1_reg  
+            s2 = project_obj.member2_reg  
+            s3 = project_obj.member3_reg 
+            lst = [s1.email, s2.email, s3.email] 
+            email = EmailMessage(
+                            'New message',
+                            f"{teacher_obj.name}({teacher_obj.email}) send you a message in {project_obj.project_title} project ",
+                            'jschouhan2325@gmail.com',
+                            to = lst,
+                            )
+            email.send()
             message = Message.objects.create(
                 user = request.user,
                 project = project_obj,
                 body = request.POST.get('body'),
-                name = student_obj.name 
+                name = teacher_obj.name 
             )
             return redirect('projectdetails', session_id, project_id)
         
@@ -152,7 +187,7 @@ def projectdetails(request, session_id, project_id):
             type = "teach"
         else:
             type = "student"
-        print("hello")
-        return render(request, 'upload.html', {'project_obj': project_obj, 'files': files, 'type':type, 'project_messages':project_messages})
+        print("hello this is the page", session_obj.session_id, project_obj.project_id)
+        return render(request, 'uploads.html', {'project_obj': project_obj, 'session_obj': session_obj, 'files': files, 'type':type, 'project_messages':project_messages})
     else:
         return redirect('home')

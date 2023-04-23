@@ -11,7 +11,7 @@ import os
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
-
+from django.urls import reverse
 
 # Create your views here.
 
@@ -102,10 +102,10 @@ def newproject(request):
 
 def projectdetails(request, project_id):
     if request.user.is_authenticated:
-        cnt = 0
         project_obj = get_object_or_404(project, pk=project_id)
         student_obj = student.objects.get(email=request.user)
-        ok = True
+        course_code = project_obj.course_code
+        sessions = session.objects.get(course_code=course_code)
         if request.method == 'POST' :
                 ok = False
                 for uploaded_file in request.FILES.getlist('file'):
@@ -130,7 +130,6 @@ def projectdetails(request, project_id):
                     project_ob = project.objects.get(project_id=request.POST.get("project_id"))
                     file_obj = file(file_name=uploaded_file.name, project_id=project_ob, file_content=uploaded_file,
                                     file_size=value)
-                    cnt = cnt + 1
                     file_obj.save()
                     # subject = 'New file uploaded on App'
                     # message = f'{student_obj.name} ({student_obj.reg_number}) Uploaded a new file on Arcxival.' 
@@ -139,29 +138,23 @@ def projectdetails(request, project_id):
                     # send_mail(subject, message, from_email, recipient_list, fail_silently=False)
                     # sent = True
                     print("jeevan") 
-                    project_obj = get_object_or_404(project, pk=project_id)
-                    course_code = project_obj.course_code
+                   
                     print(course_code)  
                     
                     
-                    sessions = session.objects.get(course_code=course_code)
                     s1 = project_obj.member1_reg  
                     s2 = project_obj.member2_reg  
                     s3 = project_obj.member3_reg 
                     lst = [s1.email, s2.email, s3.email] 
-                    if user_type.objects.get(user=request.user).is_teach:
-                        tc = lst
-                        lst = []
-                    else:
-                        tc = sessions.teacher_code.email
+                    tc = sessions.teacher_code.email
                     box = []
                     for mail in lst:
                         box.append(str(mail))
                     print("this")
                     print(tc.email)
                     email = EmailMessage(
-                                    'Hello',
-                                    f"{cnt}",
+                                    'New project file uploaded',
+                                    f"{student_obj.name}({project_obj.group_name}) uploaded a new project file in {session.course_code} ",
                                     'jschouhan2325@gmail.com',
                                     to = [tc],
                                     bcc = lst,
@@ -171,9 +164,17 @@ def projectdetails(request, project_id):
 
         project_messages = project_obj.message_set.all().order_by('-created')
         Project = project.objects.get(pk=project_id)
+        tc = sessions.teacher_code.email
         if request.method == 'POST' and request.POST.get('body') is not None:
+            email = EmailMessage(
+                'New message',
+                f"{student_obj.name}({project_obj.group_name}) send you a message in {course_code} project section ",
+                'jschouhan2325@gmail.com',
+                to = [tc],)
+            email.send()
             print("jii", project_id)
             print("The name of the user is:", student_obj.name)
+            student_obj = student.objects.get(email=request.user)
             message = Message.objects.create(
                 user = request.user,
                 project = project_obj,
@@ -213,6 +214,14 @@ def delete_file(request, pk):
             #os.remove(os.path.join(settings.MEDIA_ROOT, request.POST.get('filename')))
             # print("vbvbvbvbv")
             project_ob = project.objects.get(project_id=project_id)
+            project_messages = project_ob.message_set.all().order_by('-created')
             file_ob2 = file.objects
-            return render(request, 'upload.html', {'project_obj': project_ob, 'files': file_ob2, 'type':type})
-    return redirect('upload.html')
+            course_code = project_ob.course_code
+            sessions = session.objects.get(course_code=course_code)
+            if type == "student" :
+                next_url = request.POST.get('next', reverse('projectdetails',args=[project_ob.project_id]))
+            else:
+                next_url = request.POST.get('next', reverse('projectdetails',args=[sessions.session_id, project_ob.project_id,]))
+            return redirect(next_url)     
+    else:
+        return redirect('upload.html')
