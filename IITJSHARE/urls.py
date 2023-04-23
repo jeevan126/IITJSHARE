@@ -42,3 +42,5 @@ urlpatterns = [
     #path('media/<int:pk>/', views.delete_file, name="delete_file"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
