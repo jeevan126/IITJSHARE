@@ -55,60 +55,6 @@ def user_profile(request):
     else:
         return ('home')
 
-def archive_courses(request):
-    courses = course.objects
-    print(courses)
-    type = ""
-    if request.user.is_authenticated:
-        if user_type.objects.get(user=request.user).is_teach:
-            type = "teach"
-        else:
-            type = "student"
-    return render(request, 'archive_courses.html', {'courses': courses, 'type':type})
-
-
-def archive_Sessions(request, pk):
-    print("here", pk)
-    if len(pk) > 6:
-        pk = pk[:6]
-    session_obj_forward = session.objects.filter(course_code_id=pk);
-    session_obj_back = session.objects.filter(pk=pk);
-    print(session_obj_forward)
-    print(session_obj_back)
-
-    type = ""
-    if request.user.is_authenticated:
-        if user_type.objects.get(user=request.user).is_teach:
-            type = "teach"
-        else:
-            type = "student"
-
-    if session_obj_forward:
-        print("piche", session_obj_forward)
-        return render(request, 'archive_Sessions.html', {'sessions': session_obj_forward, 'type':type})
-    else:
-        return render(request, 'archive_Sessions.html', {'sessions': session_obj_back, 'type':type})
-
-
-def archive_redirect_noid(request):
-    messages.add_message(request, messages.ERROR, "LOGIN TO VIEW PROJECT FILES")
-    return redirect('archive_courses')
-
-
-def archive_Projects(request, pk):
-    session_ob = session.objects.get(pk=pk)
-    project_ob = project.objects.filter(session_id=pk)
-
-    type = ""
-    if request.user.is_authenticated:
-        if user_type.objects.get(user=request.user).is_teach:
-            type = "teach"
-        else:
-            type = "student"
-
-    return render(request, 'archive_Projects.html', {'projects': project_ob, 'session': session_ob, 'type':type})
-
-
 def projectdetails(request, session_id, project_id):
     # print(project_title, session)
     if request.user.is_authenticated:
