@@ -14,5 +14,5 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.idea
+idea
 my_env.env
