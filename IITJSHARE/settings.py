@@ -74,12 +74,7 @@ WSGI_APPLICATION = 'IITJSHARE.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-MYSQL_URL = "mysql://root:cezYfOMWibyxO7mFErxO@containers-us-west-80.railway.app:6603/railway"
-MYSQLDATABASE = "railway"
-MYSQLHOST = "containers-us-west-80.railway.app"
-MYSQLPASSWORD = "cezYfOMWibyxO7mFErxO"
-MYSQLPORT = 6603
-MYSQLUSER = "root"
+
 
 
 
