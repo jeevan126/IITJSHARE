@@ -27,18 +27,23 @@ def shome(request):
             project_id = project_title + session_val.batch + session_val.course_code.course_code
 
             member_data_string = request.POST.get('my_data')
+            print("this is the name:", member_data_string)
             members = member_data_string.split(',')
             member_reg = []
+            member_rol = []
             for val in members:
                 reg = ""
                 for c in val:
-                    if c >= '0' and c <= '9':
+                    if c != '-':
                         reg = reg + c
                     else:
+                        reg = reg.strip()
+                        print("roll no.",reg,"this")
+                        member_rol.append(reg)
                         member_reg.append(student.objects.get(reg_number=reg))
                         break
-
-            def_mem = student.objects.get(reg_number='1')
+            print("roll no.", member_rol[0])
+            def_mem = student.objects.get(reg_number=member_rol[0])
             if len(member_reg) == 1:
                 prj = project(project_title=project_title, group_name=group_name, course_code=course_code,
                               session=session_val,
@@ -160,7 +165,7 @@ def projectdetails(request, project_id):
                                     bcc = lst,
                                     headers={'Cc': ', '.join(box)},
                                     )
-                    email.send()
+                    #email.send()
 
         project_messages = project_obj.message_set.all().order_by('-created')
         Project = project.objects.get(pk=project_id)
@@ -171,7 +176,7 @@ def projectdetails(request, project_id):
                 f"{student_obj.name}({project_obj.group_name}) send you a message in {course_code} project section ",
                 'jschouhan2325@gmail.com',
                 to = [tc],)
-            email.send()
+            #email.send()
             print("jii", project_id)
             print("The name of the user is:", student_obj.name)
             student_obj = student.objects.get(email=request.user)

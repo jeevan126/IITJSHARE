@@ -18,8 +18,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'g9z1%-lllw&amvgft)hc^z0tluhlmzvouop9vm1a(saw=ny1_r'
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 # Application definition
@@ -73,20 +74,50 @@ WSGI_APPLICATION = 'IITJSHARE.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+MYSQL_URL = "mysql://root:cezYfOMWibyxO7mFErxO@containers-us-west-80.railway.app:6603/railway"
+MYSQLDATABASE = "railway"
+MYSQLHOST = "containers-us-west-80.railway.app"
+MYSQLPASSWORD = "cezYfOMWibyxO7mFErxO"
+MYSQLPORT = 6603
+MYSQLUSER = "root"
+
+
+
+
+
+
+
+import os
+import dj_database_url
+
+from dotenv import load_dotenv
+env_file = os.path.join(BASE_DIR, 'my_env.env')
+load_dotenv(env_file)
+
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'sql_mode': 'traditional',
-        },
-        'NAME': 'IITJSHARE',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': 'Jeevan#510',
-    }
+    "default": dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=1800),
+    
 }
+# "ENGINE": "django.db.backends.mysql",
+        # 'NAME': os.getenv('MYSQLDATABASE'),
+        # 'USER': os.getenv('MYSQLUSER'),
+        # 'PASSWORD': os.getenv('MYSQLPASSWORD'),
+        # 'HOST': os.getenv('MYSQLHOST'),
+        # 'PORT': os.getenv('MYSQLPORT'),
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'OPTIONS': {
+#             'sql_mode': 'traditional',
+#         },
+#         'NAME': 'IITJSHARE',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'USER': 'root',
+#         'PASSWORD': 'Jeevan#510',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -138,8 +169,10 @@ MEDIA_URL = '/media/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'jschouhan2325@gmail.com'
-EMAIL_HOST_PASSWORD = 'rmozypisltblhhas'
-EMAIL_PORT = 587
+
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True

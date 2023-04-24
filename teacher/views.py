@@ -150,7 +150,7 @@ def projectdetails(request, session_id, project_id):
                                     'jschouhan2325@gmail.com',
                                     to = lst,
                                     )
-                    email.send()
+                    #email.send()
                     print("this is okay")
         project_obj = get_object_or_404(project, pk=project_id)
         session_obj = get_object_or_404(session, pk=session_id)
@@ -170,7 +170,7 @@ def projectdetails(request, session_id, project_id):
                             'jschouhan2325@gmail.com',
                             to = lst,
                             )
-            email.send()
+            #email.send()
             message = Message.objects.create(
                 user = request.user,
                 project = project_obj,
