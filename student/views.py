@@ -137,7 +137,7 @@ def projectdetails(request, project_id):
                                     file_size=value)
                     file_obj.save()
                     # subject = 'New file uploaded on App'
-                    # message = f'{student_obj.name} ({student_obj.reg_number}) Uploaded a new file on Arcxival.' 
+                    # message = f'{student_obj.name} ({student_obj.reg_number}) Uploaded a new file on IITJSHARE.' 
                     # from_email = 'jschouhan2325@gmail.com'
                     # recipient_list = ['singh.126@iitj.ac.in']
                     # send_mail(subject, message, from_email, recipient_list, fail_silently=False)

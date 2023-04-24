@@ -116,7 +116,71 @@
 			background-color: #006bff;
 		}
 	</style>
+    <style>
+        .comment-wrapper {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin: 20px auto;
+            padding: 20px;
+            width: 80%;
+        }
     
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 24px;
+            padding: 20px;
+        }
+    
+        .card-body {
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+    
+        .chats-form {
+            margin-top: -20px;
+            margin-left: 110px;
+        }
+    
+        .chats-form input[type="text"] {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin: 20px auto;
+            padding: 10px;
+            width: 79%;
+        }
+    
+        .chats-form button[type="submit"] {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px;
+            width: 10%;
+        }
+    
+        .chats-form button[type="submit"]:hover {
+            background-color: #0069d9;
+        }
+        .message {
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+    
+        .message small {
+            color: #777;
+        }
+    
+        .message hr {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border-color: #ccc;
+        }
+    </style>
 
     
 
@@ -177,7 +241,7 @@
                                             <a href="{{ file.file_content.url }}" class="btn btn-default btn-sm my-0 active"
                                                style="width:125px;padding-left: 18px; padding-right: 25px;"
                                                role="button"
-                                               aria-pressed="true">Download</a>
+                                               aria-pressed="true" target="_blank" >Download</a>
                                         </td>
                                         <td>
                                             <form method="post" action="{% url 'delete_file' file.pk %}">
@@ -197,29 +261,37 @@
                 </div>
 
                 <div class="comment-wrapper">
-                    <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Conversaton of "{{ project_obj.project_title }}"</h3>
-                    <div class="card-body" style="background-color: WHITE">
-                        {%for message in project_messages|slice:":5" %}
+                    <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Conversation of "{{ project_obj.project_title }}"</h3>
+                    <div class="card-body">
+                        {% for message in project_messages|slice:":10" %}
                         <div>
-                            <small>{{message.name}}  {{message.created}}</small>
-                            <p>{{message.body}}</p>
+                            <small> <b>{{ message.name }}  {{ message.created }} </b> </small>
+                            <p class="message" >{{ message.body }}</p>
                             <hr>
                         </div>
                         {% endfor %}  
                     </div>  
                 </div>
+                        
+                <div class="chats-form">
+                    <form method="POST" action="" onsubmit="return validateMessage()">
+                        {% csrf_token %}
+                        <input type="text" placeholder="Type your message here..." style="text-align: left;" name="body">
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+                <script>
+                    function validateMessage() {
+                        var messageInput = document.getElementsByName("body")[0];
+                        var messageValue = messageInput.value.trim();
+                        if (messageValue.length == 0) {
+                            alert("Please enter a message.");
+                            return false;
+                        }
+                        return true;
+                    }
+                </script>
             </div>
-            <div class="chat-form">
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    <input type="text" placeholder="Type your message here..." style="text-align: left;" name="body" >
-                    <button type="submit">Send</button>
-                </form>
-            </div>
-            {% comment %} <div class="message-input">
-                
-                <input type="text" placeholder="Type your message..." name="body">
-            </div> {% endcomment %}
         </div>
         
     </SECTION>
