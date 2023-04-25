@@ -94,6 +94,9 @@ DATABASES = {
     "default": dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=1800),
     
 }
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-fb83.up.railway.app/'
+]
 # "ENGINE": "django.db.backends.mysql",
         # 'NAME': os.getenv('MYSQLDATABASE'),
         # 'USER': os.getenv('MYSQLUSER'),
