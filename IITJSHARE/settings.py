@@ -95,7 +95,7 @@ DATABASES = {
     
 }
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-fb83.up.railway.app/'
+    'web-production-fb83.up.railway.app'
 ]
 # "ENGINE": "django.db.backends.mysql",
         # 'NAME': os.getenv('MYSQLDATABASE'),
